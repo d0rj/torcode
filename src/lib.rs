@@ -39,6 +39,27 @@ mod tests {
 
 
     #[test]
+    fn test_parse_list_diff_types() {
+        let mut hash_map: HashMap<String, BValue> = HashMap::new();
+        hash_map.entry("cow".to_string()).or_insert(BValue::BBytes("moo".as_bytes().to_vec()));
+
+        let expected = BValue::BList(
+            vec![
+                BValue::BNumber(-3228),
+                BValue::BBytes("spam".as_bytes().to_vec()),
+                BValue::BList(vec![BValue::BNumber(42)]),
+                BValue::BDict(hash_map)
+            ]
+        );
+
+        assert_eq!(
+            BValue::from_bytes(&b"li-3228e4:spamli42eed3:cow3:mooee"[..]),
+            Ok((&b""[..], expected))
+        );
+    }
+
+
+    #[test]
     fn test_parse_dict() {
         let mut expected: HashMap<String, BValue> = HashMap::new();
         expected.entry("cow".to_string()).or_insert(BValue::BBytes("moo".as_bytes().to_vec()));
