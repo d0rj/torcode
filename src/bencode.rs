@@ -111,11 +111,12 @@ fn parse_dict(i: &[u8]) -> IResult<&[u8], HashMap<String, BValue>> {
 }
 
 
-/// Parse array of bencode bytes to `BValue` object
+/// Parse array of Bencode bytes to `BValue` object
 /// ## Arguments
 /// - `i` bytes of bencode object
 /// ## Example
 /// ```rust
+/// use torcode::bencode::{BValue, parse};
 /// assert_eq!(parse(&b"i3e"[..]), Ok((&b""[..], BValue::BNumber(3))));
 /// ```
 pub fn parse(i: &[u8]) -> IResult<&[u8], BValue> {
