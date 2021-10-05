@@ -59,7 +59,6 @@ impl BValue {
     }
 
 
-    #[allow(dead_code)]
     pub fn get_number(&self) -> &i64 {
         match self {
             BValue::BNumber(n) => n,
@@ -68,7 +67,6 @@ impl BValue {
     }
 
 
-    #[allow(dead_code)]
     pub fn get_bytes(&self) -> &Vec<u8> {
         match self {
             BValue::BBytes(bytes) => bytes,
@@ -77,7 +75,6 @@ impl BValue {
     }
 
 
-    #[allow(dead_code)]
     pub fn get_list(&self) -> &Vec<BValue> {
         match self {
             BValue::BList(list) => list,
@@ -86,7 +83,6 @@ impl BValue {
     }
 
 
-    #[allow(dead_code)]
     pub fn get_dict(&self) -> &HashMap<String, BValue> {
         match self {
             BValue::BDict(map) => map,
@@ -95,14 +91,12 @@ impl BValue {
     }
 
 
-    #[allow(dead_code)]
     pub fn get_string(&self) -> &str {
         from_utf8(self.get_bytes()).unwrap()
     }
 }
 
 
-#[allow(dead_code)]
 fn parse_number(i: &[u8]) -> IResult<&[u8], i64> {
     let signed_digit = recognize(pair(opt(char('-')), digit1));
     let parsed_num = map_res(signed_digit, |s: &[u8]| from_utf8(s).unwrap().parse::<i64>());
@@ -111,20 +105,17 @@ fn parse_number(i: &[u8]) -> IResult<&[u8], i64> {
 }
 
 
-#[allow(dead_code)]
 fn parse_length(i: &[u8]) -> IResult<&[u8], usize> {
     let len = terminated(digit1, char(':'));
     map_res(len, |s: &[u8]| from_utf8(s).unwrap().parse::<usize>())(i)
 }
 
 
-#[allow(dead_code)]
 fn parse_string(i: &[u8]) -> IResult<&[u8], String> {
     map_res(parse_bytes, String::from_utf8)(i)
 }
 
 
-#[allow(dead_code)]
 fn parse_bytes(i: &[u8]) -> IResult<&[u8], Vec<u8>> {
     let (left, len) = parse_length(i)?;
     let result = take(len);
@@ -132,14 +123,12 @@ fn parse_bytes(i: &[u8]) -> IResult<&[u8], Vec<u8>> {
 }
 
 
-#[allow(dead_code)]
 fn parse_list(i: &[u8]) -> IResult<&[u8], Vec<BValue>> {
     let values = many1(BValue::from_bytes);
     preceded(char('l'), terminated(values, char('e')))(i)
 }
 
 
-#[allow(dead_code)]
 fn parse_dict(i: &[u8]) -> IResult<&[u8], HashMap<String, BValue>> {
     let kv = pair(parse_string, BValue::from_bytes);
     let kv = many1(kv);
