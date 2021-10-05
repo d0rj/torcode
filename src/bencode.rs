@@ -3,12 +3,12 @@ use std::str::from_utf8;
 
 use nom::{
     IResult,
-    character::complete::{char, digit1},
-    combinator::{map_res, opt, recognize, map},
-    sequence::{preceded, terminated, pair},
     branch::alt,
     bytes::complete::take,
+    character::complete::{char, digit1},
+    combinator::{map_res, opt, recognize, map},
     multi::many1,
+    sequence::{preceded, terminated, pair},
 };
 
 
