@@ -1,6 +1,5 @@
 pub mod bencode;
 
-pub use bencode::parse;
 pub use bencode::BValue;
 
 
@@ -13,15 +12,15 @@ mod tests {
 
     #[test]
     fn test_parse_number() {
-        assert_eq!(parse(&b"i3228e"[..]), Ok((&b""[..], BValue::BNumber(3228))));
-        assert_eq!(parse(&b"i-3228e"[..]), Ok((&b""[..], BValue::BNumber(-3228))));
+        assert_eq!(BValue::from_bytes(&b"i3228e"[..]), Ok((&b""[..], BValue::BNumber(3228))));
+        assert_eq!(BValue::from_bytes(&b"i-3228e"[..]), Ok((&b""[..], BValue::BNumber(-3228))));
     }
 
 
     #[test]
     fn test_parse_bytes() {
         assert_eq!(
-            parse(&b"12:Hello World!"[..]),
+            BValue::from_bytes(&b"12:Hello World!"[..]),
             Ok((&b""[..], BValue::BBytes("Hello World!".as_bytes().to_vec())))
         );
     }
@@ -35,7 +34,7 @@ mod tests {
                 BValue::BBytes("eggs".as_bytes().to_vec())
             ]
         );
-        assert_eq!(parse(&b"l4:spam4:eggse"[..]), Ok((&b""[..], expected)));
+        assert_eq!(BValue::from_bytes(&b"l4:spam4:eggse"[..]), Ok((&b""[..], expected)));
     }
 
 
@@ -45,6 +44,6 @@ mod tests {
         expected.entry("cow".to_string()).or_insert(BValue::BBytes("moo".as_bytes().to_vec()));
         expected.entry("spam".to_string()).or_insert(BValue::BBytes("eggs".as_bytes().to_vec()));
 
-        assert_eq!(parse(&b"d3:cow3:moo4:spam4:eggse"[..]), Ok((&b""[..], BValue::BDict(expected))));
+        assert_eq!(BValue::from_bytes(&b"d3:cow3:moo4:spam4:eggse"[..]), Ok((&b""[..], BValue::BDict(expected))));
     }
 }

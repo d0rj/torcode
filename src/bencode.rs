@@ -22,6 +22,23 @@ pub enum BValue {
 
 
 impl BValue {
+    /// Parse array of Bencode bytes to `BValue` object
+    /// ## Arguments
+    /// - `i` bytes of bencode object
+    /// ## Example
+    /// ```rust
+    /// use torcode::bencode::BValue;
+    /// assert_eq!(BValue::from_bytes(&b"i3e"[..]), Ok((&b""[..], BValue::BNumber(3))));
+    /// ```
+    pub fn from_bytes(i: &[u8]) -> IResult<&[u8], BValue> {
+        let bnumber = map(parse_number, BValue::BNumber);
+        let bbytes = map(parse_bytes, BValue::BBytes);
+        let blist = map(parse_list, BValue::BList);
+        let bdict = map(parse_dict, BValue::BDict);
+        alt((bnumber, bbytes, blist, bdict))(i)
+    }
+
+
     #[allow(dead_code)]
     pub fn get_number(&self) -> &i64 {
         match self {
@@ -97,32 +114,15 @@ fn parse_bytes(i: &[u8]) -> IResult<&[u8], Vec<u8>> {
 
 #[allow(dead_code)]
 fn parse_list(i: &[u8]) -> IResult<&[u8], Vec<BValue>> {
-    let values = many1(parse);
+    let values = many1(BValue::from_bytes);
     preceded(char('l'), terminated(values, char('e')))(i)
 }
 
 
 #[allow(dead_code)]
 fn parse_dict(i: &[u8]) -> IResult<&[u8], HashMap<String, BValue>> {
-    let kv = pair(parse_string, parse);
+    let kv = pair(parse_string, BValue::from_bytes);
     let kv = many1(kv);
     let kv = terminated(preceded(char('d'), kv), char('e'));
     map(kv, |s| s.into_iter().collect())(i)
-}
-
-
-/// Parse array of Bencode bytes to `BValue` object
-/// ## Arguments
-/// - `i` bytes of bencode object
-/// ## Example
-/// ```rust
-/// use torcode::bencode::{BValue, parse};
-/// assert_eq!(parse(&b"i3e"[..]), Ok((&b""[..], BValue::BNumber(3))));
-/// ```
-pub fn parse(i: &[u8]) -> IResult<&[u8], BValue> {
-    let bnumber = map(parse_number, BValue::BNumber);
-    let bbytes = map(parse_bytes, BValue::BBytes);
-    let blist = map(parse_list, BValue::BList);
-    let bdict = map(parse_dict, BValue::BDict);
-    alt((bnumber, bbytes, blist, bdict))(i)
 }
