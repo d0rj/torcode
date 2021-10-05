@@ -16,6 +16,8 @@ use nom::{
 /// ## Constructors
 /// You can parse byte array (`&[u8]`) of Bencoded object using static `from_bytes` fabric
 /// method.
+/// 
+/// You can parse string of Bencoded object using static `from_string` fabric method.
 /// ## Methods
 /// You can convert `BValue` to any of variants using methods:
 /// - `get_number` -> `BNumber`
@@ -56,6 +58,19 @@ impl BValue {
         let blist = map(parse_list, BValue::BList);
         let bdict = map(parse_dict, BValue::BDict);
         alt((bnumber, bbytes, blist, bdict))(i)
+    }
+
+
+    /// Parse string of Bencode to `BValue` object
+    /// ## Arguments
+    /// - `s` string, which represent Bencoded object to parse
+    /// ## Example
+    /// ```rust
+    /// use torcode::bencode::BValue;
+    /// assert_eq!(BValue::from_string("i3228e"), Ok((&b""[..], BValue::BNumber(3228))));
+    /// ```
+    pub fn from_string(s: &str) -> IResult<&[u8], BValue> {
+        BValue::from_bytes(s.as_bytes())
     }
 
 
