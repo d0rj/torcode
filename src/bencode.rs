@@ -1,6 +1,3 @@
-extern crate nom;
-
-
 use std::fmt;
 use std::collections::HashMap;
 use std::str::from_utf8;
@@ -22,19 +19,6 @@ pub enum BValue {
     BBytes(Vec<u8>),
     BList(Vec<BValue>),
     BDict(HashMap<String, BValue>),
-}
-
-
-impl fmt::Display for BValue {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use BValue::*;
-
-        match self {
-            BNumber(n) => write!(f, "{}", n),
-            BBytes(bytes) => write!(f, "{}", from_utf8(bytes).unwrap()),
-            _ => write!(f, "fuck yooou")
-        }
-    }
 }
 
 

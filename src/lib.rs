@@ -1,4 +1,7 @@
-pub mod bencode;
+mod bencode;
+#[allow(unused_imports)]
+use bencode::parse;
+
 
 #[cfg(test)]
 mod tests {
