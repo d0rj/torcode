@@ -74,40 +74,48 @@ impl BValue {
     }
 
 
-    pub fn get_number(&self) -> &i64 {
+    /// Returns `i64` value if object has `BNumber` type, else `None`
+    pub fn get_number(&self) -> Option<&i64> {
         match self {
-            BValue::BNumber(n) => n,
-            _ => panic!("Failed to parse number")
+            BValue::BNumber(n) => Some(n),
+            _ => None
         }
     }
 
 
-    pub fn get_bytes(&self) -> &Vec<u8> {
+    /// Returns byte vector (`Vec<u8>`) if object has `BBytes` type, else `None`
+    pub fn get_bytes(&self) -> Option<&Vec<u8>> {
         match self {
-            BValue::BBytes(bytes) => bytes,
-            _ => panic!("Failed to parse bytes")
+            BValue::BBytes(bytes) => Some(bytes),
+            _ => None
         }
     }
 
 
-    pub fn get_list(&self) -> &Vec<BValue> {
+    /// Returns list of `BValue`s if object has `BList` type, else `None`
+    pub fn get_list(&self) -> Option<&Vec<BValue>> {
         match self {
-            BValue::BList(list) => list,
-            _ => panic!("Failed to parse list")
+            BValue::BList(list) => Some(list),
+            _ => None
         }
     }
 
 
-    pub fn get_dict(&self) -> &HashMap<String, BValue> {
+    /// Returns dictionary `String`->`BValue` if object has `BDict` type, else `None`
+    pub fn get_dict(&self) -> Option<&HashMap<String, BValue>> {
         match self {
-            BValue::BDict(map) => map,
-            _ => panic!("Failed to parse dict")
+            BValue::BDict(map) => Some(map),
+            _ => None
         }
     }
 
 
-    pub fn get_string(&self) -> &str {
-        from_utf8(self.get_bytes()).unwrap()
+    /// Returns string representation of ASCII bytes if object has `BBytes` type, else `None`
+    pub fn get_string(&self) -> Option<&str> {
+        match self.get_bytes() {
+            Some(bytes) => Some(from_utf8(bytes).unwrap()),
+            _ => None
+        }
     }
 }
 
