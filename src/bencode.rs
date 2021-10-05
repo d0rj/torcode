@@ -12,6 +12,26 @@ use nom::{
 };
 
 
+/// Bencode value representation class (ADT)
+/// ## Constructors
+/// You can parse byte array (`&[u8]`) of Bencoded object using static `from_bytes` fabric
+/// method.
+/// ## Methods
+/// You can convert `BValue` to any of variants using methods:
+/// - `get_number` -> `BNumber`
+/// - `get_bytes` -> `BBytes`
+/// - `get_list` -> `BList`
+/// - `get_dict` -> `BDict`
+/// - and `get_string` to convert bytes directly to string representation (`&str`)
+/// ## ADT variants
+/// ### `BNumber`
+/// Simple `i64` value.
+/// ### `BBytes`
+/// Vector of `u8` values.
+/// ### `BList`
+/// Vector with some `BValue` elements.
+/// ### `BDict`
+/// `HashMap` with string keys and `BValue` values.
 #[derive(Debug,PartialEq)]
 pub enum BValue {
     BNumber(i64),
