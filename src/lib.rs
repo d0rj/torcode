@@ -1,4 +1,4 @@
-mod bencode;
+pub mod bencode;
 
 pub use bencode::parse;
 
