@@ -1,4 +1,3 @@
-use std::fmt;
 use std::collections::HashMap;
 use std::str::from_utf8;
 
